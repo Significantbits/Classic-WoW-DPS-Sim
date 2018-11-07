@@ -20,6 +20,7 @@ class Character:
         self.spell = None
         self.damage = 0.0
         self.gcd_count = 0
+        self.crit_chance = 5
 
         # Spec spell priority
         if self.spec == "Frost":
@@ -78,6 +79,9 @@ class Character:
         '''
         return self.spell_casttime_dict[spellname]
 
+    def is_crit(self):
+        return random.randint(0,100) < self.crit_chance
+
     def run_step(self):
         """
         Function runs one step of the simulation. This will equate to time_step_resolution second(s) in real time.
@@ -114,10 +118,14 @@ class Character:
                 self.gcd = False
 
 
-        # Add damage
+        # Check for crit and Add damage
         if (not self.casting) and (self.spell != None):
             spell_damage = self.get_spell_damage(self.spell)
-            print("Casted " + self.spell + " for " + str(spell_damage) + " damage! - at time %.2f second(s)" % num_secs)
+            if self.is_crit():
+                spell_damage = spell_damage * 2
+                print("Casted " + self.spell + " for " + str(spell_damage) + " CRIT damage! - at time %.2f second(s)" % num_secs)
+            else:
+                print("Casted " + self.spell + " for " + str(spell_damage) + " damage! - at time %.2f second(s)" % num_secs)
             self.damage = self.damage + spell_damage
             self.spell = None
 
