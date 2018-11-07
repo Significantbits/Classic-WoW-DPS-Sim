@@ -1,8 +1,6 @@
 # Classic WoW Class simulation
 # Want to take in talent tree and run DPS sim.
 
-# Need cd_list to take GCD into account.
-
 import json
 import random
 
@@ -40,7 +38,7 @@ class Character:
         if state == True:
             self.spell_cooldown_dict[spell][1] = self.spell_cooldown_time_dict[spell]
 
-    def choose_spell(self,priority=None,cd_list=None):
+    def choose_spell(self,priority=None):
         '''
         This function will return a spell given a priority list
         '''
