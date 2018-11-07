@@ -12,7 +12,7 @@ GCD = 1.5 # in seconds
 class Character:
     
     def __init__(self):
-        self.spec = "Fire"
+        self.spec = "Frost"
         self.casting = False
         self.gcd = False
         self.cast_time = 1000
@@ -20,18 +20,23 @@ class Character:
         self.damage = 0.0
         self.gcd_count = 0
 
+        # Spec spell priority
         if self.spec == "Frost":
             self.spell_priority = ['Fire Blast','Frostbolt','Arcane Explosion','Fireball']
         if self.spec == "Fire":
             self.spell_priority = ['Fire Blast','Fireball','Arcane Explosion','Frostbolt']
 
+        # Spell Damage
         self.spell_damage_dict = dict([('Frostbolt', [53,60]),('Fire Blast',[60,74]),('Arcane Explosion',[33,38]),('Fireball',[57,77])])
         if self.spec == "Frost":
             self.spell_casttime_dict = dict([('Frostbolt',1.7),('Fire Blast',0),('Arcane Explosion',0),('Fireball',2.5)])
         if self.spec == "Fire":
             self.spell_casttime_dict = dict([('Frostbolt',2.2),('Fire Blast',0),('Arcane Explosion',0),('Fireball',2.0)])
 
+        # Spell Cooldown
         self.spell_cooldown_dict = dict([('Frostbolt',[False,0]),('Fire Blast',[False,0]),('Arcane Explosion',[False,0]),('Fireball',[False,0])])
+
+        # Spec spell cooldown
         if self.spec == "Frost":
             self.spell_cooldown_time_dict = dict([('Frostbolt',0),('Fire Blast',8),('Arcane Explosion',0),('Fireball',0)])
         if self.spec == "Fire":
