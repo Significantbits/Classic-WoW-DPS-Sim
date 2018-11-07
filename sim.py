@@ -3,6 +3,7 @@
 
 import json
 import random
+import sys
 
 num_secs = 0 # Keeping track of the number of steps
 time_step_resolution = 0.1 # How many seconds each step is
@@ -11,8 +12,8 @@ GCD = 1.5 # in seconds
 
 class Character:
     
-    def __init__(self):
-        self.spec = "Frost"
+    def __init__(self,spec):
+        self.spec = spec
         self.casting = False
         self.gcd = False
         self.cast_time = 1000
@@ -116,7 +117,7 @@ class Character:
         # Add damage
         if (not self.casting) and (self.spell != None):
             spell_damage = self.get_spell_damage(self.spell)
-            print("Casted " + self.spell + " for " + str(spell_damage) + " damage!")
+            print("Casted " + self.spell + " for " + str(spell_damage) + " damage! - at time %.2f second(s)" % num_secs)
             self.damage = self.damage + spell_damage
             self.spell = None
 
@@ -124,8 +125,12 @@ class Character:
 
 if __name__ == "__main__":
     print("Starting WoW Classic DPS Simulator Version 0.01...")
+    
+    if "-spec" in sys.argv:
+        spec = sys.argv[sys.argv.index("-spec") + 1]
+    print("Running sim for " + str(spec) + " mage...")
     print("Running for " + str(seconds_to_run) + " seconds...")
-    player = Character()
+    player = Character(spec)
     while int(num_secs) != seconds_to_run:
         player.run_step()
         num_secs = num_secs + time_step_resolution
