@@ -18,11 +18,11 @@ class Character:
         self.spell = None
         self.damage = 0.0
         self.gcd_count = 0
-        self.spell_priority = ['Fire Blast','Frostbolt']
-        self.spell_damage_dict = dict([('Frostbolt', [53,60]),('Fire Blast',[60,74])])
-        self.spell_casttime_dict = dict([('Frostbolt',1.7),('Fire Blast',0)])
-        self.spell_cooldown_dict = dict([('Frostbolt',[False,0]),('Fire Blast',[False,0])])
-        self.spell_cooldown_time_dict = dict([('Frostbolt',0),('Fire Blast',8)])
+        self.spell_priority = ['Fire Blast','Frostbolt','Arcane Explosion']
+        self.spell_damage_dict = dict([('Frostbolt', [53,60]),('Fire Blast',[60,74]),('Arcane Explosion',[33,38])])
+        self.spell_casttime_dict = dict([('Frostbolt',1.7),('Fire Blast',0),('Arcane Explosion',0)])
+        self.spell_cooldown_dict = dict([('Frostbolt',[False,0]),('Fire Blast',[False,0]),('Arcane Explosion',[False,0])])
+        self.spell_cooldown_time_dict = dict([('Frostbolt',0),('Fire Blast',8),('Arcane Explosion',0)])
 
     def get_spell_damage(self,spellname="spell"):
         '''
@@ -97,7 +97,9 @@ class Character:
         # Add damage
         if (not self.casting) and (self.spell != None):
             spell_damage = self.get_spell_damage(self.spell)
+            print("Casted " + self.spell + " for " + str(spell_damage) + " damage!")
             self.damage = self.damage + spell_damage
+            self.spell = None
 
     
 
