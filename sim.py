@@ -4,6 +4,7 @@
 import json
 import random
 import sys
+from spell_data import create_spell_data
 
 num_secs = 0 # Keeping track of the number of steps
 time_step_resolution = 0.1 # How many seconds each step is
@@ -16,12 +17,13 @@ class Character:
         self.spec = spec
         self.casting = False
         self.gcd = False
+        self.dots = []
         self.cast_time = 1000
         self.spell = None
         self.damage = 0.0
         self.gcd_count = 0
         self.crit_chance = 5
-
+        self.spell_data = create_spell_data()
         # Spec spell priority
         if self.spec == "Frost":
             self.spell_priority = ['Fire Blast','Frostbolt','Arcane Explosion','Fireball']
@@ -43,6 +45,8 @@ class Character:
             self.spell_cooldown_time_dict = dict([('Frostbolt',0),('Fire Blast',8),('Arcane Explosion',0),('Fireball',0)])
         if self.spec == "Fire":
             self.spell_cooldown_time_dict = dict([('Frostbolt',0),('Fire Blast',6.5),('Arcane Explosion',0),('Fireball',0)])
+
+        spell_effect_dict = dict([('Frostbolt',[False,0]),('Fire Blast',[False,0]),('Arcane Explosion',[False,0]),('Fireball',[True,'dot',6,6])])
 
 
     def get_spell_damage(self,spellname="spell"):
@@ -82,6 +86,16 @@ class Character:
     def is_crit(self):
         return random.randint(0,100) < self.crit_chance
 
+    def apply_dot(self,dmg_per_tsr):
+        self.dots.append(dmg_per_tsr)
+
+    def has_spell_effect(self,spell):
+        return spell_effect_dict[spell][0]
+
+    def is_dot(self,spell):
+        return (spell_effect_dict[spell][1] == 'dot')
+
+
     def run_step(self):
         """
         Function runs one step of the simulation. This will equate to time_step_resolution second(s) in real time.
@@ -118,7 +132,7 @@ class Character:
                 self.gcd = False
 
 
-        # Check for crit and Add damage
+        # Check for crit and Add damage and spell effects
         if (not self.casting) and (self.spell != None):
             spell_damage = self.get_spell_damage(self.spell)
             if self.is_crit():
