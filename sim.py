@@ -22,46 +22,27 @@ class Character:
         self.spell = None
         self.damage = 0.0
         self.gcd_count = 0
-        self.crit_chance = 5
+        self.crit_chance = 5 # Crit chance in percent
         self.spell_data = create_spell_data()
         # Spec spell priority
         if self.spec == "Frost":
-            self.spell_priority = ['Fire Blast','Frostbolt','Arcane Explosion','Fireball']
+            self.spell_priority = ['Fire Blast r1','Frostbolt r1','Arcane Explosion r1','Fireball r1']
         if self.spec == "Fire":
-            self.spell_priority = ['Fire Blast','Fireball','Arcane Explosion','Frostbolt']
-
-        # Spell Damage
-        self.spell_damage_dict = dict([('Frostbolt', [53,60]),('Fire Blast',[60,74]),('Arcane Explosion',[33,38]),('Fireball',[57,77])])
-        if self.spec == "Frost":
-            self.spell_casttime_dict = dict([('Frostbolt',1.7),('Fire Blast',0),('Arcane Explosion',0),('Fireball',2.5)])
-        if self.spec == "Fire":
-            self.spell_casttime_dict = dict([('Frostbolt',2.2),('Fire Blast',0),('Arcane Explosion',0),('Fireball',2.0)])
-
-        # Spell Cooldown
-        self.spell_cooldown_dict = dict([('Frostbolt',[False,0]),('Fire Blast',[False,0]),('Arcane Explosion',[False,0]),('Fireball',[False,0])])
-
-        # Spec spell cooldown
-        if self.spec == "Frost":
-            self.spell_cooldown_time_dict = dict([('Frostbolt',0),('Fire Blast',8),('Arcane Explosion',0),('Fireball',0)])
-        if self.spec == "Fire":
-            self.spell_cooldown_time_dict = dict([('Frostbolt',0),('Fire Blast',6.5),('Arcane Explosion',0),('Fireball',0)])
-
-        spell_effect_dict = dict([('Frostbolt',[False,0]),('Fire Blast',[False,0]),('Arcane Explosion',[False,0]),('Fireball',[True,'dot',6,6])])
-
+            self.spell_priority = ['Fire Blast r1','Fireball r1','Arcane Explosion r1','Frostbolt r1']
 
     def get_spell_damage(self,spellname="spell"):
         '''
         This function returns a spell's damage
         '''
-        return random.randint(self.spell_damage_dict[spellname][0],self.spell_damage_dict[spellname][1]) 
+        return random.randint(self.spell_data[spellname][1][0],self.spell_data[spellname][1][1]) 
     
     def is_on_cooldown(self,spell):
-        return self.spell_cooldown_dict[spell][0]
+        return self.spell_data[spell][6]
 
     def set_cooldown(self,spell,state):
-        self.spell_cooldown_dict[spell][0] = state 
+        self.spell_data[spell][6] = state 
         if state == True:
-            self.spell_cooldown_dict[spell][1] = self.spell_cooldown_time_dict[spell]
+            self.spell_data[spell][7] = self.spell_data[spell][5]
 
     def choose_spell(self,priority=None):
         '''
@@ -81,7 +62,7 @@ class Character:
         '''
         This function returns the cast time of a spell
         '''
-        return self.spell_casttime_dict[spellname]
+        return self.spell_data[spellname][0]
 
     def is_crit(self):
         return random.randint(0,100) < self.crit_chance
@@ -93,7 +74,7 @@ class Character:
         return spell_effect_dict[spell][0]
 
     def is_dot(self,spell):
-        return (spell_effect_dict[spell][1] == 'dot')
+        return (spell_data[spell][2] != 0)
 
 
     def run_step(self):
@@ -119,11 +100,11 @@ class Character:
                 self.casting = False
 
         #Update Cooldowns
-        for spell in self.spell_cooldown_dict:
+        for spell in self.spell_data:
             if self.is_on_cooldown(spell):
-                self.spell_cooldown_dict[spell][1] -= time_step_resolution
-                if self.spell_cooldown_dict[spell][1] < 0.09:
-                    self.spell_cooldown_dict[spell][0] = False  # Spell is now off cooldown
+                self.spell_data[spell][7] -= time_step_resolution
+                if self.spell_data[spell][7] < 0.09:
+                    self.spell_data[spell][6] = False  # Spell is now off cooldown
 
         # Update Global cooldown
         if self.gcd:
