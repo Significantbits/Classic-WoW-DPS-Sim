@@ -13,7 +13,7 @@ GCD = 1.5 # in seconds
 
 class Character:
     
-    def __init__(self,spec):
+    def __init__(self,spec,sp):
         self.spec = spec
         self.casting = False
         self.gcd = False
@@ -25,10 +25,7 @@ class Character:
         self.crit_chance = 5 # Crit chance in percent
         self.spell_data = create_spell_data()
         # Spec spell priority
-        if self.spec == "Frost":
-            self.spell_priority = ['Fire Blast r1','Frostbolt r1','Arcane Explosion r1','Fireball r1']
-        if self.spec == "Fire":
-            self.spell_priority = ['Fire Blast r1','Fireball r1','Arcane Explosion r1','Frostbolt r1']
+        self.spell_priority = sp
 
     def get_spell_damage(self,spellname="spell"):
         '''
@@ -110,6 +107,7 @@ class Character:
         if self.gcd:
             self.gcd_count += time_step_resolution
             if self.gcd_count >= GCD:
+                self.gcd_count = 0
                 self.gcd = False
 
 
@@ -131,9 +129,16 @@ if __name__ == "__main__":
     
     if "-spec" in sys.argv:
         spec = sys.argv[sys.argv.index("-spec") + 1]
+    else:
+        spec = "Frost"
+    if "-spell_priority" in sys.argv:
+        spell_priority = sys.argv[sys.argv.index("-spell_priority") + 1].split(',')
+    else:
+        spell_priority = ['Fire Blast r7','Frostbolt r11','Arcane Explosion r1','Fireball r1']
+        
     print("Running sim for " + str(spec) + " mage...")
     print("Running for " + str(seconds_to_run) + " seconds...")
-    player = Character(spec)
+    player = Character(spec,spell_priority)
     while int(num_secs) != seconds_to_run:
         player.run_step()
         num_secs = num_secs + time_step_resolution
