@@ -26,12 +26,19 @@ class Character:
         self.spell_data = create_spell_data()
         # Spec spell priority
         self.spell_priority = sp
+        self.mana_spent = 0
 
     def get_spell_damage(self,spellname="spell"):
         '''
         This function returns a spell's damage
         '''
         return random.randint(self.spell_data[spellname][1][0],self.spell_data[spellname][1][1]) 
+
+    def get_spell_mana_cost(self,spellname="spell"):
+        '''
+        This function returns the spell's mana cost
+        '''
+        return self.spell_data[spellname][4]
     
     def is_on_cooldown(self,spell):
         return self.spell_data[spell][6]
@@ -120,6 +127,7 @@ class Character:
             else:
                 print("Casted " + self.spell + " for " + str(spell_damage) + " damage! - at time %.2f second(s)" % num_secs)
             self.damage = self.damage + spell_damage
+            self.mana_spent += self.get_spell_mana_cost(self.spell)
             self.spell = None
 
     
@@ -143,3 +151,4 @@ if __name__ == "__main__":
         player.run_step()
         num_secs = num_secs + time_step_resolution
     print("Your DPS is: " + str(player.damage / seconds_to_run))
+    print("Your mana efficiency: " + str((player.damage/player.mana_spent)))

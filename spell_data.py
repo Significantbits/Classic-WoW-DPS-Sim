@@ -5,6 +5,7 @@
 def create_spell_data():
     spell_data = {}
 
+    # Mage damage spells
     spell_data['Fireball r1'] = [1.5,[14,23],(2.0/4.0),0,30,0,False,0]
     spell_data['Fireball r2'] = [2,[31,46],(3.0/6.0),0,45,0,False,0]
     spell_data['Fireball r3'] = [2.5,[53,74],(6.0/6.0),0,65,0,False,0]
