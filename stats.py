@@ -10,3 +10,6 @@ def create_character_stats:
     stats["Agility"] = 12
     stats["Stamina"] = 12
     stats["Spirit"] = 12
+
+def create_weapon_stats:
+
