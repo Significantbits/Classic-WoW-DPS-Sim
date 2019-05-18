@@ -3,15 +3,18 @@ import json
 import random
 import sys
 from spell_data import create_spell_data
+from global_vars import Global_Vars
 
-num_secs = 0 # Keeping track of the number of steps
-time_step_resolution = 0.1 # How many seconds each step is
-seconds_to_run = 20 # Time simulator runs in seconds
-GCD = 1.5 # in seconds
+#num_secs = 0 # Keeping track of the number of steps
+#time_step_resolution = 0.1 # How many seconds each step is
+#seconds_to_run = 20 # Time simulator runs in seconds
+#GCD = 1.5 # in seconds
 
 class Character:
+
     
-    def __init__(self,spec,sp):
+    def __init__(self,spec,sp,g_vars):
+        self.g_vars = g_vars
         self.spec = spec
         self.casting = False
         self.gcd = False
@@ -97,21 +100,21 @@ class Character:
 
         # Sim cast time
         if self.casting:
-            self.cast_time = self.cast_time - time_step_resolution
+            self.cast_time = self.cast_time - self.g_vars.time_step_resolution
             if float(self.cast_time) < 0.09:
                 self.casting = False
 
         #Update Cooldowns
         for spell in self.spell_data:
             if self.is_on_cooldown(spell):
-                self.spell_data[spell][7] -= time_step_resolution
+                self.spell_data[spell][7] -= self.g_vars.time_step_resolution
                 if self.spell_data[spell][7] < 0.09:
                     self.spell_data[spell][6] = False  # Spell is now off cooldown
 
         # Update Global cooldown
         if self.gcd:
-            self.gcd_count += time_step_resolution
-            if self.gcd_count >= GCD:
+            self.gcd_count += self.g_vars.time_step_resolution
+            if self.gcd_count >= self.g_vars.GCD:
                 self.gcd_count = 0
                 self.gcd = False
 
@@ -121,9 +124,9 @@ class Character:
             spell_damage = self.get_spell_damage(self.spell)
             if self.is_crit():
                 spell_damage = spell_damage * 2
-                print("Casted " + self.spell + " for " + str(spell_damage) + " CRIT damage! - at time %.2f second(s)" % num_secs)
+                print("Casted " + self.spell + " for " + str(spell_damage) + " CRIT damage! - at time %.2f second(s)" % self.g_vars.num_secs)
             else:
-                print("Casted " + self.spell + " for " + str(spell_damage) + " damage! - at time %.2f second(s)" % num_secs)
+                print("Casted " + self.spell + " for " + str(spell_damage) + " damage! - at time %.2f second(s)" % self.g_vars.num_secs)
             self.damage = self.damage + spell_damage
             self.mana_spent += self.get_spell_mana_cost(self.spell)
             self.spell = None
