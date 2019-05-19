@@ -123,7 +123,7 @@ class Character:
         if (not self.casting) and (self.spell != None):
             spell_damage = self.get_spell_damage(self.spell)
             if self.is_crit():
-                spell_damage = spell_damage * 2
+                spell_damage = spell_damage * 1.5
                 print("Casted " + self.spell + " for " + str(spell_damage) + " CRIT damage! - at time %.2f second(s)" % self.g_vars.num_secs)
             else:
                 print("Casted " + self.spell + " for " + str(spell_damage) + " damage! - at time %.2f second(s)" % self.g_vars.num_secs)
