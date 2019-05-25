@@ -15,7 +15,6 @@ class Character:
     
     def __init__(self,spec,sp,g_vars):
         self.g_vars = g_vars
-        self.spec = spec
         self.casting = False
         self.gcd = False
         self.dots = []
@@ -24,7 +23,6 @@ class Character:
         self.damage = 0.0
         self.gcd_count = 0
         self.crit_chance = 5 # Crit chance in percent
-        self.spell_data = create_spell_data()
         # Spec spell priority
         self.spell_priority = sp
         self.mana_spent = 0
@@ -82,51 +80,3 @@ class Character:
         return (spell_data[spell][2] != 0)
 
 
-    def run_step(self):
-        """
-        Function runs one step of the simulation. This will equate to time_step_resolution second(s) in real time.
-        """
-        # Choose spell from priority
-        if (not self.casting) and (not self.gcd):
-            self.spell = self.choose_spell(priority=self.spell_priority)
-            if self.spell == None:  # Assert on not choosing a spell
-                print("DIDN'T CHOOSE A SPELL!")
-                exit(0)
-            self.set_cooldown(self.spell,True) 
-            # Cast spell or Auto attack
-            self.cast_time = self.get_cast_time(self.spell)
-            self.casting = True
-            self.gcd = True
-
-        # Sim cast time
-        if self.casting:
-            self.cast_time = self.cast_time - self.g_vars.time_step_resolution
-            if float(self.cast_time) < 0.09:
-                self.casting = False
-
-        #Update Cooldowns
-        for spell in self.spell_data:
-            if self.is_on_cooldown(spell):
-                self.spell_data[spell][7] -= self.g_vars.time_step_resolution
-                if self.spell_data[spell][7] < 0.09:
-                    self.spell_data[spell][6] = False  # Spell is now off cooldown
-
-        # Update Global cooldown
-        if self.gcd:
-            self.gcd_count += self.g_vars.time_step_resolution
-            if self.gcd_count >= self.g_vars.GCD:
-                self.gcd_count = 0
-                self.gcd = False
-
-
-        # Check for crit and Add damage and spell effects
-        if (not self.casting) and (self.spell != None):
-            spell_damage = self.get_spell_damage(self.spell)
-            if self.is_crit():
-                spell_damage = spell_damage * 1.5
-                print("Casted " + self.spell + " for " + str(spell_damage) + " CRIT damage! - at time %.2f second(s)" % self.g_vars.num_secs)
-            else:
-                print("Casted " + self.spell + " for " + str(spell_damage) + " damage! - at time %.2f second(s)" % self.g_vars.num_secs)
-            self.damage = self.damage + spell_damage
-            self.mana_spent += self.get_spell_mana_cost(self.spell)
-            self.spell = None

@@ -6,6 +6,7 @@ import random
 import sys
 from spell_data import create_spell_data
 from character import Character
+from mage import Mage
 from global_vars import Global_Vars 
 
 #num_secs = 0 # Keeping track of the number of steps
@@ -30,7 +31,10 @@ if __name__ == "__main__":
         
     print("Running sim for " + str(spec) + " mage...")
     print("Running for " + str(g_vars.seconds_to_run) + " seconds...")
-    player = Character(spec,spell_priority,g_vars)
+    #player = Character(spec,spell_priority,g_vars)
+    player = Mage(spec,spell_priority,g_vars)
+    player.init_class()
+    player.print_info()
     while int(g_vars.num_secs) != g_vars.seconds_to_run:
         player.run_step()
         g_vars.num_secs = g_vars.num_secs + g_vars.time_step_resolution
