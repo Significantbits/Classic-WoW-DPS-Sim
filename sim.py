@@ -33,7 +33,7 @@ if __name__ == "__main__":
     print("Running for " + str(g_vars.seconds_to_run) + " seconds...")
     #player = Character(spec,spell_priority,g_vars)
     player = Mage(spec,spell_priority,g_vars)
-    player.init_class()
+    #player.init_class()
     player.print_info()
     while int(g_vars.num_secs) != g_vars.seconds_to_run:
         player.run_step()

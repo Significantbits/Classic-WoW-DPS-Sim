@@ -8,10 +8,12 @@ from global_vars import Global_Vars
 
 class Mage(Character):
 
-    def init_class(self):
+    def __init__(self,spec,sp,g_vars):
+        super().__init__(spec,sp,g_vars)
         self.info = "This is for the mage class"
         self.spell_data = create_spell_data("Mage")
         self.spec = spec
+        self.mana_spent = 0
 
     def print_info(self):
         print(self.info)
@@ -21,6 +23,7 @@ class Mage(Character):
         Function runs one step of the simulation. This will equate to time_step_resolution second(s) in real time.
         """
         # Choose spell from priority
+        #if (not self.casting) and (not self.gcd):
         if (not self.casting) and (not self.gcd):
             self.spell = self.choose_spell(priority=self.spell_priority)
             if self.spell == None:  # Assert on not choosing a spell

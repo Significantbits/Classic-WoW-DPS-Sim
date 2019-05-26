@@ -25,7 +25,6 @@ class Character:
         self.crit_chance = 5 # Crit chance in percent
         # Spec spell priority
         self.spell_priority = sp
-        self.mana_spent = 0
 
     def get_spell_damage(self,spellname="spell"):
         '''
@@ -38,6 +37,12 @@ class Character:
         This function returns the spell's mana cost
         '''
         return self.spell_data[spellname][4]
+
+    def get_casting(self):
+        return self.casting
+
+    def is_gcd(self):
+        return self.gcd
     
     def is_on_cooldown(self,spell):
         return self.spell_data[spell][6]
