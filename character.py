@@ -4,6 +4,7 @@ import random
 import sys
 from spell_data import create_spell_data
 from global_vars import Global_Vars
+from stats import create_weapon_stats
 
 #num_secs = 0 # Keeping track of the number of steps
 #time_step_resolution = 0.1 # How many seconds each step is
@@ -23,6 +24,10 @@ class Character:
         self.damage = 0.0
         self.gcd_count = 0
         self.crit_chance = 5 # Crit chance in percent
+        self.auto_attacking = False
+        self.swing_timer = 0.0
+        self.swing = False
+        self.weapon_stats = create_weapon_stats()
         # Spec spell priority
         self.spell_priority = sp
 
@@ -31,6 +36,9 @@ class Character:
         This function returns a spell's damage
         '''
         return random.randint(self.spell_data[spellname][1][0],self.spell_data[spellname][1][1]) 
+
+    def get_weapon_damage(self):
+        return random.randint(self.weapon_stats["Damage"][0],self.weapon_stats["Damage"][1])
 
     def get_spell_mana_cost(self,spellname="spell"):
         '''

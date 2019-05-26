@@ -31,12 +31,10 @@ if __name__ == "__main__":
         
     print("Running sim for " + str(spec) + " mage...")
     print("Running for " + str(g_vars.seconds_to_run) + " seconds...")
-    #player = Character(spec,spell_priority,g_vars)
     player = Mage(spec,spell_priority,g_vars)
-    #player.init_class()
-    player.print_info()
     while int(g_vars.num_secs) != g_vars.seconds_to_run:
         player.run_step()
         g_vars.num_secs = g_vars.num_secs + g_vars.time_step_resolution
+    print("Mana left: " + str(player.mana))
     print("Your DPS is: " + str(player.damage / g_vars.seconds_to_run))
     print("Your mana efficiency: " + str((player.damage/player.mana_spent)))

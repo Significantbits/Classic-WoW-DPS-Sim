@@ -10,10 +10,12 @@ class Mage(Character):
 
     def __init__(self,spec,sp,g_vars):
         super().__init__(spec,sp,g_vars)
-        self.info = "This is for the mage class"
+        self.info = "Mage"
         self.spell_data = create_spell_data("Mage")
         self.spec = spec
+        self.mana = 850
         self.mana_spent = 0
+        self.current_spell_cost = 0
 
     def print_info(self):
         print(self.info)
@@ -23,23 +25,34 @@ class Mage(Character):
         Function runs one step of the simulation. This will equate to time_step_resolution second(s) in real time.
         """
         # Choose spell from priority
-        #if (not self.casting) and (not self.gcd):
         if (not self.casting) and (not self.gcd):
             self.spell = self.choose_spell(priority=self.spell_priority)
-            if self.spell == None:  # Assert on not choosing a spell
-                print("DIDN'T CHOOSE A SPELL!")
-                exit(0)
-            self.set_cooldown(self.spell,True) 
-            # Cast spell or Auto attack
-            self.cast_time = self.get_cast_time(self.spell)
-            self.casting = True
-            self.gcd = True
+            self.current_spell_cost = self.get_spell_mana_cost(self.spell)
+            if self.current_spell_cost > self.mana:
+                self.spell = None
+            if self.spell == None:  # Might be oom if no spell
+                self.auto_attacking = True
+            else:
+                self.set_cooldown(self.spell,True) 
+                # Cast spell or Auto attack
+                self.cast_time = self.get_cast_time(self.spell)
+                self.casting = True
+                self.gcd = True
 
         # Sim cast time
         if self.casting:
             self.cast_time = self.cast_time - self.g_vars.time_step_resolution
             if float(self.cast_time) < 0.09:
                 self.casting = False
+                self.mana -= self.current_spell_cost
+
+        # Sim auto attack timer
+        if self.auto_attacking:
+            self.swing_timer += self.g_vars.time_step_resolution
+            if float(self.swing_timer) >= self.weapon_stats["Attack Speed"]:
+                self.auto_attacking = False
+                self.swing = True
+
 
         #Update Cooldowns
         for spell in self.spell_data:
@@ -55,6 +68,14 @@ class Mage(Character):
                 self.gcd_count = 0
                 self.gcd = False
 
+        # Apply Auto Attack Damage
+        if self.swing:
+            wep_temp = self.get_weapon_damage()
+            print("OUT OF MANA: " + str(self.mana))
+            print("Auto Attacked for " + str(wep_temp) + " damage! - at time %.2f second(s)" % self.g_vars.num_secs)
+            self.damage += wep_temp
+            self.swing = False
+            self.swing_timer = 0
 
         # Check for crit and Add damage and spell effects
         if (not self.casting) and (self.spell != None):
@@ -67,4 +88,6 @@ class Mage(Character):
             self.damage = self.damage + spell_damage
             self.mana_spent += self.get_spell_mana_cost(self.spell)
             self.spell = None
+
+
 
