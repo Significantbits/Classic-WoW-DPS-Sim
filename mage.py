@@ -1,10 +1,10 @@
 
-import json
 import random
 import sys
 from spell_data import create_spell_data
 from character import Character
 from global_vars import Global_Vars
+import math
 
 class Mage(Character):
 
@@ -13,7 +13,9 @@ class Mage(Character):
         self.info = "Mage"
         self.spell_data = create_spell_data("Mage")
         self.spec = spec
-        self.mana = 850
+        self.mana = int(math.ceil(self.char_stats["Intellect"] * 15)) + 111
+        print("Mana: " + str(self.mana))
+        self.crit_chance = self.char_stats["Intellect"] / 59.5  # Spell crit chance
         self.mana_spent = 0
         self.current_spell_cost = 0
 
@@ -34,7 +36,7 @@ class Mage(Character):
                 self.auto_attacking = True
             else:
                 self.set_cooldown(self.spell,True) 
-                # Cast spell or Auto attack
+                # Cast spell
                 self.cast_time = self.get_cast_time(self.spell)
                 self.casting = True
                 self.gcd = True

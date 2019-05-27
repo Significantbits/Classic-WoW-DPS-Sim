@@ -1,10 +1,10 @@
 
-import json
 import random
 import sys
 from spell_data import create_spell_data
 from global_vars import Global_Vars
 from stats import create_weapon_stats
+from stats import create_character_stats
 
 #num_secs = 0 # Keeping track of the number of steps
 #time_step_resolution = 0.1 # How many seconds each step is
@@ -16,6 +16,7 @@ class Character:
     
     def __init__(self,spec,sp,g_vars):
         self.g_vars = g_vars
+        self.char_stats = create_character_stats()
         self.casting = False
         self.gcd = False
         self.dots = []
@@ -23,7 +24,6 @@ class Character:
         self.spell = None
         self.damage = 0.0
         self.gcd_count = 0
-        self.crit_chance = 5 # Crit chance in percent
         self.auto_attacking = False
         self.swing_timer = 0.0
         self.swing = False

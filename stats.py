@@ -5,11 +5,11 @@ def create_character_stats():
     stats = {}
 
     # In the future hopefully this can be filled in based on gear
-    stats["Intellect"] = 12
-    stats["Strength"] = 12
-    stats["Agility"] = 12
-    stats["Stamina"] = 12
-    stats["Spirit"] = 12
+    stats["Intellect"] = 55
+    stats["Strength"] = 23
+    stats["Agility"] = 22
+    stats["Stamina"] = 26
+    stats["Spirit"] = 54
 
     return stats
 

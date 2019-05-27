@@ -1,7 +1,6 @@
 # Classic WoW Class simulation
 # Want to take in talent tree and run DPS sim.
 
-import json
 import random
 import sys
 from spell_data import create_spell_data
