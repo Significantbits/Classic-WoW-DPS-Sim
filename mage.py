@@ -18,6 +18,9 @@ class Mage(Character):
         self.crit_chance = self.char_stats["Intellect"] / 59.5  # Spell crit chance
         self.mana_spent = 0
         self.current_spell_cost = 0
+        self.channeling = False
+        self.channel_time = 0
+        self.channel_th = 1.0
 
     def print_info(self):
         print(self.info)
@@ -27,7 +30,7 @@ class Mage(Character):
         Function runs one step of the simulation. This will equate to time_step_resolution second(s) in real time.
         """
         # Choose spell from priority
-        if (not self.casting) and (not self.gcd):
+        if (not self.casting) and (not self.gcd) and (not self.channeling):
             self.spell = self.choose_spell(priority=self.spell_priority)
             self.current_spell_cost = self.get_spell_mana_cost(self.spell)
             if self.current_spell_cost > self.mana:
@@ -40,6 +43,8 @@ class Mage(Character):
                 self.cast_time = self.get_cast_time(self.spell)
                 self.casting = True
                 self.gcd = True
+                if self.spell_data[self.spell][3] != 0:
+                    self.channeling = True
 
         # Sim cast time
         if self.casting:
@@ -79,8 +84,9 @@ class Mage(Character):
             self.swing = False
             self.swing_timer = 0
 
+
         # Check for crit and Add damage and spell effects
-        if (not self.casting) and (self.spell != None):
+        if (not self.casting) and (self.spell != None) and (not self.channeling):
             spell_damage = self.get_spell_damage(self.spell)
             if self.is_crit():
                 spell_damage = spell_damage * 1.5
@@ -91,5 +97,22 @@ class Mage(Character):
             self.mana_spent += self.get_spell_mana_cost(self.spell)
             self.spell = None
 
+        # Apply Channeling Damage
+        if self.channeling:
+            self.channel_time += self.g_vars.time_step_resolution
+            if (self.channel_time > self.channel_th):
+                spell_damage = self.get_spell_damage(self.spell)
+                self.channel_th += 1
+                if self.is_crit():
+                    spell_damage = spell_damage * 1.5
+                    print("Casted " + self.spell + " for " + str(spell_damage) + " CRIT damage! - at time %.2f second(s)" % self.g_vars.num_secs)
+                else:
+                    print("Casted " + self.spell + " for " + str(spell_damage) + " damage! - at time %.2f second(s)" % self.g_vars.num_secs)
+                self.damage += spell_damage
+            if self.channel_time > self.spell_data[self.spell][3]:
+                self.channeling = False
+                self.channel_time = 0
+                self.channel_th = 1.0
+                self.mana_spent += self.get_spell_mana_cost(self.spell)
 
 
